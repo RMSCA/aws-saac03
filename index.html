@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Search</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #search { margin-bottom: 20px; width: 100%; padding: 10px; }
+        #results { display: flex; flex-wrap: wrap; gap: 20px; }
+        .image-card { width: 200px; text-align: center; }
+        .image-card img { width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+    <input type="text" id="search" placeholder="Search for text...">
+    <div id="results"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
+    <script src="data.json"></script>
+    <script>
+        const searchInput = document.getElementById('search');
+        const resultsDiv = document.getElementById('results');
+        let fuse;
+
+        // Initialize Fuse.js with the extracted data
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                fuse = new Fuse(data, { keys: ['text'], threshold: 0.3 });
+            });
+
+        // Search and display results
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value;
+            const results = fuse.search(query);
+            
+            resultsDiv.innerHTML = ''; // Clear previous results
+            results.forEach(({ item }) => {
+                const card = document.createElement('div');
+                card.className = 'image-card';
+                card.innerHTML = `
+                    <img src="images/${item.image}" alt="Image">
+                    <p>${item.text}</p>
+                `;
+                resultsDiv.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>
