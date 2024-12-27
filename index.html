@@ -27,7 +27,7 @@
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
-                fuse = new Fuse(data, { keys: ['text'], threshold: 0.3 });
+                fuse = new Fuse(data, { keys: ['text'], threshold: 0.7 });
             });
 
         // Search and display results
